@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>压缩图片</title>
+			
+	</head>
+	<body>
+		<script type="text/javascript">  
+var result=document.getElementById("result");  
+var file=document.getElementById("file");  
+  
+//判断浏览器是否支持FileReader接口  
+if(typeof FileReader == 'undefined'){  
+    result.InnerHTML="<p>你的浏览器不支持FileReader接口！</p>";  
+    //使选择控件不可操作  
+    file.setAttribute("disabled","disabled");  
+}  
+  
+function readAsDataURL(){  
+    //检验是否为图像文件  
+    var file = document.getElementById("file").files[0];  
+
+
+var pr =file.type.toString().split("/")[1];
+if (!/\.(jpg|jpeg|JPG|JPEG)$/.test("."+pr)) {
+					alert("图片格式不正确，请选择jpg、jpeg、JPG、JPEG格式的图片上传");
+					return false;
+			} 
+
+    var reader = new FileReader(); 
+    
+    //将文件以Data URL形式读入页面  
+    reader.readAsDataURL(file);  
+    
+    
+    reader.onload=function(e){  
+        var result=document.getElementById("result"); 
+        var res = changeDPI300(this.result);//在这里调用，然后用res从新接受下新的base64码，
+      console.log(res);
+        //现在的这个res就是新的base64码，也就是dpi为300的图片的base64码
+        //显示文件  
+        
+        result.innerHTML='<img src="' + res +'" alt="" id="img"/>';  
+        
+        dd();
+    }  
+}  
+  
+
+  
+ //将图片转化为分辨率为300 
+function changeDPI300(result){
+	var str_pre  =  result.substring(0,26);//获取图片dpi前的base64信息
+	var str_mid  =  result.substring(26,51);//获取图片dpi信息，dpi为72的
+
+//base64信息：/4AAQSkZJRgABAQEASABIAAD/
+	var str_suf  =  result.substring(51);//获取图片dpi后的base64信息
+	if(str_pre=='data:image/jpeg;base64,/9j'){//如果图片是JPG格式的，那么就返回替换后的base64码，否则返回原base64码
+		return str_pre+'/4AAQSkZJRgABAQEBLAEsAAD/'+str_suf;
+	}else{
+		return  result;
+	}
+}
+
+
+function dd() { 
+var img = document.getElementById('img'), 
+/** 
+* 图片按比例自适应缩放 
+* @param img {Element} 用户上传的图片 
+* @param maxWidth {Number} 预览区域的最大宽度 
+* @param maxHeight {Number} 预览区域的最大高度 
+*/ 
+resizeImg = function(img, maxWidth, maxHeight){ 
+var w = img.width, 
+h = img.height; 
+// 当图片比预览区域小时不做任何改变 
+if(w < maxWidth && h < maxHeight){
+	return;
+}else{
+		// 当实际图片比例大于预览区域宽高比例时 
+       // 缩放图片宽度，反之缩放图片宽度 
+   w/h > maxWidth/maxHeight ? img.width = maxWidth : img.height = maxHeight; 
+	}
+
+}; 
+
+resizeImg(img, 300, 1280); 
+
+}
+ 
+
+
+//function dra() {
+//ImageAutoResize('div[id=result]');
+//function ImageAutoResize(findstr)
+//{
+// var maxWidth = $(findstr).css("width").replace('px','');
+// var maxHeight = $(findstr).css("height").replace('px','');
+// $(findstr + ' img').each(function() {
+// var ratio = 0;  // 缩放比例
+// var width = $(this).width();    // 图片实际宽度
+// var height = $(this).height();  // 图片实际高度
+// // 检查图片是否超宽
+// if(width > maxWidth){
+//  ratio = maxWidth / width;   // 计算缩放比例
+//  $(this).css("width", maxWidth + 'px'); // 设定实际显示宽度
+//  $(this).css("height", (height * ratio) + 'px');  // 设定等比例缩放后的高
+// }
+// var width = $(this).width();    // 图片实际宽度
+// var height = $(this).height();  // 图片实际高度
+// // 检查图片是否超高
+// if(height > maxHeight){
+//  ratio = maxHeight / height; // 计算缩放比例
+//  $(this).css("height", maxHeight + 'px');   // 设定实际显示高度
+//  $(this).css("width", (width * ratio) + 'px');    // 设定等比例缩放后的高度
+// }
+// //调整位置
+// var width = $(this).width();    // 图片实际宽度
+// var height = $(this).height();  // 图片实际高度
+// $(this).css("margin-left",(maxWidth - width) / 2 + 'px');
+// $(this).css("margin-top",(maxHeight - height) / 2 + 'px');
+// });
+//}
+// };
+
+
+
+</script>  
+
+
+<p>  
+    <label>请选择一个文件：</label>  
+    <input type="file" id="file" />  
+    <input type="button" value="读取图像" onclick="readAsDataURL()" />  
+    <!--<input type="button" value="读取二进制数据" />  
+    <input type="button" value="读取文本文件" />  -->
+</p>  
+<div id="result" name="result"></div>
+	</body>	
+</html>
+
+
